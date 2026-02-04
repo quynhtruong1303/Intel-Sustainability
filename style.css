@@ -1,1 +1,594 @@
-/* Add your CSS here */
+/* ================================================================
+   RESET & BASE
+   ================================================================ */
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Nunito Sans', sans-serif;
+  color: #1a1a2e;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ================================================================
+   NAVBAR   ── fixed, transparent → frosted-dark on scroll
+   ================================================================ */
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 52px;
+  background: transparent;
+  transition: background 0.4s ease,
+              padding   0.35s ease,
+              box-shadow 0.4s ease;
+}
+
+.navbar.scrolled {
+  background: rgba(8, 18, 36, 0.92);
+  padding: 11px 52px;
+  box-shadow: 0 2px 24px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+/* ── logo (SVG is white text on cyan square ── no filter needed) ── */
+.logo-link {
+  display: flex;
+  align-items: center;
+}
+
+.logo {
+  height: 40px;
+  width: auto;
+}
+
+/* ── nav links ── */
+.nav-links {
+  list-style: none;
+  display: flex;
+  gap: 40px;
+}
+
+.nav-links a {
+  color: #fff;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.92rem;
+  letter-spacing: 0.5px;
+  position: relative;
+  padding-bottom: 6px;
+  transition: color 0.3s ease;
+}
+
+/* animated underline */
+.nav-links a::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: linear-gradient(to right, #0071c5, #00c7fd);
+  border-radius: 1px;
+  transition: width 0.35s ease;
+}
+
+.nav-links a:hover {
+  color: #00c7fd;
+}
+
+.nav-links a:hover::after {
+  width: 100%;
+}
+
+/* ================================================================
+   HERO   ── full-viewport auto slideshow
+   ================================================================ */
+.hero {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  min-height: 580px;
+  overflow: hidden;
+}
+
+/* ── slideshow stack ── */
+.slideshow {
+  position: absolute;
+  inset: 0;
+}
+
+.slide {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 1.5s ease-in-out;
+}
+
+.slide.active {
+  opacity: 1;
+}
+
+.slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* subtle Ken-Burns zoom on every slide */
+  animation: ken-burns 12s ease-in-out infinite alternate;
+}
+
+@keyframes ken-burns {
+  from { transform: scale(1);    }
+  to   { transform: scale(1.12); }
+}
+
+/* ── dark-gradient overlay + centred quote ── */
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(
+    180deg,
+    rgba(8, 18, 36, 0.30)  0%,
+    rgba(8, 18, 36, 0.50) 35%,
+    rgba(8, 18, 36, 0.72) 65%,
+    rgba(8, 18, 36, 0.90) 100%
+  );
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 28px;
+}
+
+.hero-quote {
+  color: #fff;
+  font-size: 2.15rem;
+  font-weight: 300;
+  line-height: 1.5;
+  text-align: center;
+  max-width: 760px;
+  letter-spacing: 0.15px;
+}
+
+.hero-brand {
+  display: block;
+  margin-top: 20px;
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: #00c7fd;
+  letter-spacing: 0.6px;
+}
+
+/* ── scroll chevron ── */
+.scroll-hint {
+  position: absolute;
+  bottom: 38px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2;
+}
+
+.chevron {
+  width: 26px;
+  height: 26px;
+  border-right:  2.5px solid rgba(255, 255, 255, 0.65);
+  border-bottom: 2.5px solid rgba(255, 255, 255, 0.65);
+  transform: rotate(45deg);
+  animation: chevron-pulse 2.4s ease-in-out infinite;
+}
+
+@keyframes chevron-pulse {
+  0%,  100% { transform: rotate(45deg) translate(0, 0);     opacity: 0.8;  }
+  50%       { transform: rotate(45deg) translate(5px, 5px);  opacity: 0.35; }
+}
+
+/* ================================================================
+   SHARED SECTION UTILITIES
+   ================================================================ */
+.section {
+  padding: 110px 48px;
+}
+
+.section-dark {
+  background: #0a1628;
+}
+
+.container {
+  max-width: 1080px;
+  margin: 0 auto;
+}
+
+/* ── title + accent bar ── */
+.section-title {
+  font-size: 2.3rem;
+  font-weight: 700;
+  text-align: center;
+  color: #0071c5;
+  margin-bottom: 12px;
+}
+
+.section-dark .section-title {
+  color: #fff;
+}
+
+.title-accent {
+  width: 56px;
+  height: 3px;
+  background: linear-gradient(to right, #0071c5, #00c7fd);
+  margin: 0 auto;
+  border-radius: 2px;
+}
+
+.section-subtitle {
+  text-align: center;
+  font-size: 0.98rem;
+  color: #7a8fa3;
+  margin: 20px auto 72px;
+  max-width: 520px;
+  line-height: 1.65;
+}
+
+/* ================================================================
+   ABOUT US
+   ================================================================ */
+#about {
+  background: #f0f4f8;
+}
+
+.about-content {
+  max-width: 740px;
+  margin: 48px auto 0;
+  text-align: center;
+}
+
+.about-content p {
+  font-size: 1.07rem;
+  line-height: 1.9;
+  color: #3d4f63;
+  margin-bottom: 24px;
+  font-weight: 400;
+}
+
+.about-content p:last-child {
+  margin-bottom: 0;
+}
+
+/* ================================================================
+   TIMELINE
+   ================================================================ */
+.timeline {
+  position: relative;
+  padding: 16px 0 40px;
+}
+
+/* ── centre vertical line ── */
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  transform: translateX(-50%);
+  background: linear-gradient(180deg, #0071c5 0%, #00c7fd 50%, #0071c5 100%);
+}
+
+/* ── each row ── */
+.timeline-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 88px;
+  position: relative;
+}
+
+.timeline-item:last-child {
+  margin-bottom: 0;
+}
+
+/* ─── TEXT side   (default = LEFT) ─── */
+.timeline-content {
+  flex: 1;
+  padding-right: 64px;
+  text-align: right;
+  /* scroll-reveal initial state ── slides in from the left */
+  opacity: 0;
+  transform: translateX(var(--slide-x, -52px));
+  transition: opacity  0.9s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              transform 0.9s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* ─── IMAGE side  (default = RIGHT) ─── */
+.timeline-image {
+  flex: 1;
+  padding-left: 64px;
+  display: flex;
+  justify-content: flex-start;
+  /* scroll-reveal initial state ── slides in from the right */
+  opacity: 0;
+  transform: translateX(var(--slide-x, 52px));
+  transition: opacity  0.9s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              transform 0.9s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* ─── REVERSE  ── swap sides & flip slide directions ─── */
+.timeline-item.reverse .timeline-content {
+  order: 2;
+  text-align: left;
+  padding-right: 0;
+  padding-left: 64px;
+  --slide-x: 52px;            /* slides in from the right */
+}
+
+.timeline-item.reverse .timeline-image {
+  order: 1;
+  padding-left: 0;
+  padding-right: 64px;
+  justify-content: flex-end;
+  --slide-x: -52px;           /* slides in from the left  */
+}
+
+/* ─── VISIBLE  (class added by JS Intersection Observer)      ─── */
+/* Placed AFTER reverse rules: same specificity → source order wins */
+.timeline-item .timeline-content.visible,
+.timeline-item .timeline-image.visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* ─── centre dot  ── pop-in animation ─── */
+.timeline-dot {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%) scale(0.3);
+  width: 20px;
+  height: 20px;
+  background: #0071c5;
+  border: 3px solid #00c7fd;
+  border-radius: 50%;
+  z-index: 2;
+  opacity: 0;
+  transition: opacity  0.55s ease,
+              transform 0.55s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.timeline-dot.visible {
+  opacity: 1;
+  transform: translateX(-50%) scale(1);
+}
+
+/* ─── year badge ─── */
+.timeline-year {
+  display: inline-block;
+  background: linear-gradient(135deg, #0071c5, #00c7fd);
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.77rem;
+  padding: 5px 17px;
+  border-radius: 100px;
+  margin-bottom: 12px;
+  letter-spacing: 1.8px;
+}
+
+/* ─── title & body inside timeline ─── */
+.timeline-content h3 {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 10px;
+}
+
+.timeline-content p {
+  font-size: 0.94rem;
+  line-height: 1.82;
+  color: #7a8fa3;
+}
+
+/* ─── real photo cards ─── */
+.timeline-image img {
+  width: 100%;
+  max-width: 400px;
+  height: 250px;
+  object-fit: cover;
+  border-radius: 14px;
+  box-shadow: 0 10px 38px rgba(0, 0, 0, 0.3);
+  flex-shrink: 0;
+  transition: transform 0.4s ease,
+              box-shadow 0.4s ease,
+              filter   0.4s ease;
+}
+
+.timeline-image img:hover {
+  transform: scale(1.04);
+  box-shadow: 0 18px 52px rgba(0, 0, 0, 0.45),
+              0 0 22px rgba(0, 199, 253, 0.3);
+  filter: brightness(1.08);
+}
+
+/* ─── gradient placeholder cards  (milestones without photos) ─── */
+.img-placeholder {
+  width: 400px;
+  max-width: 100%;
+  height: 250px;
+  border-radius: 14px;
+  box-shadow: 0 10px 38px rgba(0, 0, 0, 0.3);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: transform 0.4s ease,
+              box-shadow 0.4s ease;
+}
+
+.img-placeholder:hover {
+  transform: scale(1.04);
+  box-shadow: 0 18px 52px rgba(0, 0, 0, 0.45),
+              0 0 24px rgba(0, 199, 253, 0.35);
+}
+
+/* soft radial light-spot */
+.img-placeholder::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 35% 40%,
+    rgba(255, 255, 255, 0.14) 0%,
+    transparent 60%
+  );
+  pointer-events: none;
+  transition: background 0.4s ease;
+}
+
+.img-placeholder:hover::before {
+  background: radial-gradient(ellipse at 35% 40%,
+    rgba(255, 255, 255, 0.28) 0%,
+    transparent 60%
+  );
+}
+
+/* large year watermark */
+.img-placeholder::after {
+  content: attr(data-year);
+  font-size: 5.6rem;
+  font-weight: 800;
+  color: rgba(255, 255, 255, 0.10);
+  letter-spacing: -4px;
+  position: relative;
+  z-index: 1;
+  transition: color 0.4s ease,
+              transform 0.4s ease;
+}
+
+.img-placeholder:hover::after {
+  color: rgba(255, 255, 255, 0.20);
+  transform: scale(1.08);
+}
+
+/* ================================================================
+   FOOTER
+   ================================================================ */
+.footer {
+  background: #060e1c;
+  padding: 38px 24px;
+  text-align: center;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.footer p {
+  color: #4a5a6b;
+  font-size: 0.85rem;
+}
+
+/* ================================================================
+   RESPONSIVE   ── collapse timeline to single column
+   ================================================================ */
+@media (max-width: 900px) {
+  .section {
+    padding: 80px 28px;
+  }
+
+  .hero-quote {
+    font-size: 1.6rem;
+  }
+
+  .navbar,
+  .navbar.scrolled {
+    padding-left: 24px;
+    padding-right: 24px;
+  }
+
+  /* ── vertical line moves to left gutter ── */
+  .timeline::before {
+    left: 26px;
+  }
+
+  /* ── switch to column layout ── */
+  .timeline-item,
+  .timeline-item.reverse {
+    flex-direction: column;
+    align-items: flex-start;
+    padding-left: 68px;
+    margin-bottom: 64px;
+  }
+
+  /* ── text always on top ── */
+  .timeline-item .timeline-content,
+  .timeline-item.reverse .timeline-content {
+    order: 1;
+    flex: none;
+    width: 100%;
+    text-align: left;
+    padding-left: 0;
+    padding-right: 0;
+    margin-bottom: 18px;
+    --slide-x: -36px;
+  }
+
+  /* ── image always below text ── */
+  .timeline-item .timeline-image,
+  .timeline-item.reverse .timeline-image {
+    order: 2;
+    flex: none;
+    width: 100%;
+    padding-left: 0;
+    padding-right: 0;
+    justify-content: flex-start;
+    --slide-x: -36px;
+  }
+
+  /* ── dot moves to left line ── */
+  .timeline-dot {
+    left: 26px;
+  }
+
+  /* ── images stretch full width ── */
+  .timeline-image img,
+  .img-placeholder {
+    max-width: 100%;
+    width: 100%;
+    height: 210px;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-quote {
+    font-size: 1.25rem;
+  }
+
+  .hero-brand {
+    font-size: 0.92rem;
+  }
+
+  .logo {
+    height: 28px;
+  }
+
+  .nav-links {
+    gap: 20px;
+  }
+
+  .nav-links a {
+    font-size: 0.8rem;
+  }
+
+  .section-title {
+    font-size: 1.85rem;
+  }
+}
