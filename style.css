@@ -11,6 +11,7 @@
 
 html {
   scroll-behavior: smooth;
+  scroll-snap-type: y proximity;
 }
 
 body {
@@ -106,6 +107,7 @@ body {
   height: 100vh;
   min-height: 580px;
   overflow: hidden;
+  scroll-snap-align: start;
 }
 
 /* ── slideshow stack ── */
@@ -203,6 +205,11 @@ body {
    ================================================================ */
 .section {
   padding: 110px 48px;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  scroll-snap-align: start;
 }
 
 .section-dark {
