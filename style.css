@@ -22,6 +22,55 @@ body {
 }
 
 /* ================================================================
+   LOCALIZATION   ── fix Bidi punctuation for English content
+   ================================================================
+   With dir="rtl" on <html>, the Unicode Bidirectional Algorithm
+   treats punctuation (periods, apostrophes, ®, —) as "neutral"
+   and places them at the RTL edge. Applying direction:ltr +
+   unicode-bidi:embed on each text container tells the Bidi
+   engine to treat the content as LTR, keeping punctuation in
+   its correct visual position, while the outer layout stays RTL.
+   ================================================================ */
+.nav-links a,
+.hero-quote,
+.about-content p,
+.section-title,
+.section-subtitle,
+.timeline-year,
+.timeline-content h3,
+.timeline-content p,
+.footer p {
+  direction: ltr;
+  unicode-bidi: embed;
+}
+
+/* ================================================================
+   ACCESSIBILITY
+   ================================================================ */
+
+/* skip link: invisible until focused, then slides in for keyboard users */
+.skip-link {
+  position: absolute;
+  top: -100%;
+  inset-inline-start: 0;
+  background: #0071c5;
+  color: #fff;
+  padding: 12px 24px;
+  z-index: 9999;
+  font-weight: 700;
+  font-size: 0.9rem;
+  text-decoration: none;
+  border-radius: 0 0 8px 8px;
+  direction: ltr;
+  unicode-bidi: embed;
+  transition: top 0.2s ease;
+}
+.skip-link:focus {
+  top: 0;
+  color: #fff;
+}
+
+/* ================================================================
    NAVBAR   ── fixed, transparent → frosted-dark on scroll
    ================================================================ */
 .navbar {
@@ -82,7 +131,7 @@ body {
   content: '';
   position: absolute;
   bottom: 0;
-  left: 0;
+  inset-inline-start: 0; /* logical: right in RTL, left in LTR */
   width: 0;
   height: 2px;
   background: linear-gradient(to right, #0071c5, #00c7fd);
@@ -302,17 +351,18 @@ body {
   align-items: center;
   margin-bottom: 88px;
   position: relative;
+  cursor: pointer;
 }
 
 .timeline-item:last-child {
   margin-bottom: 0;
 }
 
-/* ─── TEXT side   (default = LEFT) ─── */
+/* ─── TEXT side   (default = inline-start) ─── */
 .timeline-content {
   flex: 1;
-  padding-right: 64px;
-  text-align: right;
+  padding-inline-end: 64px;   /* logical: collapses to padding-left in RTL */
+  text-align: end;             /* logical: right in LTR, left in RTL */
   /* scroll-reveal initial state ── slides in from the left */
   opacity: 0;
   transform: translateX(var(--slide-x, -52px));
@@ -320,10 +370,10 @@ body {
               transform 0.9s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
-/* ─── IMAGE side  (default = RIGHT) ─── */
+/* ─── IMAGE side  (default = inline-end) ─── */
 .timeline-image {
   flex: 1;
-  padding-left: 64px;
+  padding-inline-start: 64px; /* logical: collapses to padding-right in RTL */
   display: flex;
   justify-content: flex-start;
   /* scroll-reveal initial state ── slides in from the right */
@@ -336,18 +386,18 @@ body {
 /* ─── REVERSE  ── swap sides & flip slide directions ─── */
 .timeline-item.reverse .timeline-content {
   order: 2;
-  text-align: left;
-  padding-right: 0;
-  padding-left: 64px;
-  --slide-x: 52px;            /* slides in from the right */
+  text-align: start;            /* logical: left in LTR, right in RTL */
+  padding-inline-end: 0;
+  padding-inline-start: 64px;
+  --slide-x: 52px;
 }
 
 .timeline-item.reverse .timeline-image {
   order: 1;
-  padding-left: 0;
-  padding-right: 64px;
+  padding-inline-start: 0;
+  padding-inline-end: 64px;
   justify-content: flex-end;
-  --slide-x: -52px;           /* slides in from the left  */
+  --slide-x: -52px;
 }
 
 /* ─── VISIBLE  (class added by JS Intersection Observer)      ─── */
@@ -404,6 +454,30 @@ body {
   font-size: 0.94rem;
   line-height: 1.82;
   color: #7a8fa3;
+  /* hidden by default — revealed on hover/focus */
+  opacity: 0;
+  max-height: 0;
+  overflow: hidden;
+  transform: translateY(8px);
+  transition: opacity 0.4s ease,
+              transform 0.4s ease,
+              max-height 0.5s ease;
+}
+
+/* ─── reveal description on hover / keyboard focus ─── */
+.timeline-item:hover .timeline-content p,
+.timeline-item:focus .timeline-content p,
+.timeline-item:focus-within .timeline-content p {
+  opacity: 1;
+  max-height: 200px;
+  transform: translateY(0);
+}
+
+/* ─── keyboard focus outline for accessibility ─── */
+.timeline-item:focus {
+  outline: 2px solid #00c7fd;
+  outline-offset: 6px;
+  border-radius: 4px;
 }
 
 /* ─── real photo cards ─── */
@@ -425,6 +499,65 @@ body {
   box-shadow: 0 18px 52px rgba(0, 0, 0, 0.45),
               0 0 22px rgba(0, 199, 253, 0.3);
   filter: brightness(1.08);
+}
+
+/* ================================================================
+   SUSTAINABILITY PILLARS   ── Bootstrap three-column grid section
+   ================================================================ */
+.pillars-section {
+  background: #0e1c35;
+}
+
+/* section heading: override default Intel-blue to white on dark background */
+.pillars-section .section-title {
+  color: #fff;
+}
+
+/* subtitle: lift from muted #7a8fa3 to a readable light blue-grey */
+.pillars-section .section-subtitle {
+  color: #a8c0d4;
+}
+
+/* card shell */
+.pillar-card {
+  background: rgba(255, 255, 255, 0.08); /* was 0.04 — cards now visible */
+  border: 1px solid rgba(0, 199, 253, 0.35); /* was 0.15 — edge clearly defined */
+  border-radius: 16px;
+  padding: 40px 28px;
+  text-align: center;
+  height: 100%;
+  direction: ltr;
+  unicode-bidi: embed;
+  transition: transform    0.35s ease,
+              box-shadow   0.35s ease,
+              border-color 0.35s ease;
+}
+
+.pillar-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.35),
+              0 0 24px rgba(0, 199, 253, 0.18);
+  border-color: rgba(0, 199, 253, 0.7);
+}
+
+.pillar-icon {
+  font-size: 2.8rem;
+  margin-bottom: 20px;
+  display: block;
+}
+
+.pillar-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 14px;
+}
+
+.pillar-text {
+  font-size: 0.93rem;
+  line-height: 1.8;
+  color: #b8ccd8; /* was #7a8fa3 — raised to pass WCAG AA on this background */
+  margin-bottom: 0;
 }
 
 /* ================================================================
@@ -456,13 +589,12 @@ body {
 
   .navbar,
   .navbar.scrolled {
-    padding-left: 24px;
-    padding-right: 24px;
+    padding-inline: 24px; /* logical shorthand: covers both sides */
   }
 
-  /* ── vertical line moves to left gutter ── */
+  /* ── vertical line moves to inline-start gutter ── */
   .timeline::before {
-    left: 26px;
+    inset-inline-start: 26px; /* logical: left in LTR, right in RTL */
   }
 
   /* ── switch to column layout ── */
@@ -470,7 +602,7 @@ body {
   .timeline-item.reverse {
     flex-direction: column;
     align-items: flex-start;
-    padding-left: 68px;
+    padding-inline-start: 68px; /* logical: indent from reading-start edge */
     margin-bottom: 64px;
   }
 
@@ -480,9 +612,9 @@ body {
     order: 1;
     flex: none;
     width: 100%;
-    text-align: left;
-    padding-left: 0;
-    padding-right: 0;
+    text-align: start;          /* logical: left in LTR, right in RTL */
+    padding-inline-start: 0;
+    padding-inline-end: 0;
     margin-bottom: 18px;
     --slide-x: -36px;
   }
@@ -499,9 +631,9 @@ body {
     --slide-x: -36px;
   }
 
-  /* ── dot moves to left line ── */
+  /* ── dot moves to inline-start line ── */
   .timeline-dot {
-    left: 26px;
+    inset-inline-start: 26px; /* logical: right in RTL, left in LTR */
   }
 
   /* ── images stretch full width ── */
@@ -509,6 +641,13 @@ body {
     max-width: 100%;
     width: 100%;
     height: 210px;
+  }
+
+  /* ── descriptions always visible on small screens (no hover) ── */
+  .timeline-content p {
+    opacity: 1;
+    max-height: none;
+    transform: translateY(0);
   }
 }
 
@@ -535,5 +674,124 @@ body {
 
   .section-title {
     font-size: 1.85rem;
+  }
+}
+
+/* ================================================================
+   LARGE SCREEN   ── horizontal scrollable timeline
+   ================================================================ */
+@media (min-width: 901px) {
+
+  /* ── horizontal scroll container ── */
+  .timeline {
+    display: flex;
+    flex-direction: row;
+    overflow-x: auto;
+    overflow-y: visible;
+    scroll-snap-type: x mandatory;
+    scroll-padding-left: 40px;
+    padding: 0 40px 48px;
+    align-items: flex-start;
+    gap: 0;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+    scrollbar-color: #0071c5 rgba(255, 255, 255, 0.1);
+  }
+
+  /* custom scrollbar (webkit) */
+  .timeline::-webkit-scrollbar {
+    height: 6px;
+  }
+  .timeline::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 3px;
+  }
+  .timeline::-webkit-scrollbar-thumb {
+    background: linear-gradient(to right, #0071c5, #00c7fd);
+    border-radius: 3px;
+  }
+
+  /* ── hide the vertical centre line; replace with per-card segments ── */
+  .timeline::before {
+    display: none;
+  }
+
+  /* ── card layout: uniform column, overrides "reverse" swap ── */
+  .timeline-item,
+  .timeline-item.reverse {
+    flex: 0 0 300px;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 0;
+    padding: 20px 16px 24px;
+    scroll-snap-align: start;
+    border-radius: 14px;
+    transition: background 0.3s ease, outline 0.3s ease;
+  }
+
+  .timeline-item:hover,
+  .timeline-item:focus {
+    background: rgba(0, 113, 197, 0.08);
+    outline: 2px solid rgba(0, 199, 253, 0.5);
+    outline-offset: 0;
+    border-radius: 14px;
+  }
+
+  /* ── horizontal connecting line drawn on each card ── */
+  /* top: 20px (padding-top) + 10px (half dot height) = 30px */
+  .timeline-item::before,
+  .timeline-item.reverse::before {
+    content: '';
+    position: absolute;
+    top: 30px;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #0071c5, #00c7fd);
+    z-index: 0;
+  }
+
+  /* ── dot: in-flow at top of card, centered on the line ── */
+  .timeline-dot {
+    position: relative;
+    left: auto;
+    top: auto;
+    order: 1;
+    transform: translateX(0) scale(0.3);
+    margin: 0 auto 16px;
+    z-index: 2;
+    flex-shrink: 0;
+  }
+
+  .timeline-dot.visible {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+
+  /* ── image: order 2, centered below dot ── */
+  .timeline-item .timeline-image,
+  .timeline-item.reverse .timeline-image {
+    order: 2;
+    width: 100%;
+    padding: 0;
+    justify-content: center;
+    --slide-x: 0;
+    margin-bottom: 12px;
+  }
+
+  .timeline-image img {
+    max-width: 100%;
+    width: 100%;
+    height: 170px;
+  }
+
+  /* ── content: order 3, centered below image ── */
+  .timeline-item .timeline-content,
+  .timeline-item.reverse .timeline-content {
+    order: 3;
+    width: 100%;
+    text-align: center;
+    padding: 0;
+    --slide-x: 0;
   }
 }
