@@ -90,6 +90,41 @@ body {
               box-shadow 0.4s ease;
 }
 
+/* ── Google Translate widget ── compact, sits after nav links */
+.translate-widget {
+  flex-shrink: 0;
+}
+
+/* hide Google's top-bar iframe banner */
+.goog-te-banner-frame,
+body > .skiptranslate {
+  display: none !important;
+}
+
+body {
+  top: 0 !important; /* prevent Google Translate from pushing the page down */
+}
+
+/* style the native <select> Google injects */
+.goog-te-gadget-simple {
+  background: rgba(255, 255, 255, 0.08) !important;
+  border: 1px solid rgba(0, 199, 253, 0.4) !important;
+  border-radius: 6px !important;
+  padding: 4px 8px !important;
+  font-family: inherit !important;
+  font-size: 0.8rem !important;
+  color: #fff !important;
+  cursor: pointer;
+}
+
+.goog-te-gadget-simple .goog-te-menu-value span {
+  color: #fff !important;
+}
+
+.goog-te-gadget-simple .goog-te-menu-value span:last-child {
+  color: rgba(0, 199, 253, 0.8) !important; /* dropdown arrow */
+}
+
 .navbar.scrolled {
   background: rgba(8, 18, 36, 0.92);
   padding: 11px 52px;
@@ -562,10 +597,87 @@ body {
 }
 
 /* ================================================================
+   FAQ ACCORDION
+   ================================================================ */
+.faq-section {
+  background: #071428;
+}
+
+.faq-section .section-title {
+  color: #fff;
+}
+
+.faq-section .section-subtitle {
+  color: #a8c0d4;
+}
+
+/* accordion wrapper: constrain width for readability */
+.faq-accordion {
+  max-width: 820px;
+  margin: 0 auto;
+  direction: ltr;
+  unicode-bidi: embed;
+}
+
+/* each accordion card */
+.faq-item {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(0, 199, 253, 0.18) !important;
+  border-radius: 10px !important;
+  margin-bottom: 12px;
+  overflow: hidden;
+}
+
+/* question button */
+.faq-btn {
+  background: transparent !important;
+  color: #e0eaf4 !important;
+  font-weight: 600;
+  font-size: 0.97rem;
+  padding: 20px 24px;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  transition: color 0.25s ease, background 0.25s ease;
+}
+
+.faq-btn:not(.collapsed) {
+  color: #00c7fd !important;
+  background: rgba(0, 199, 253, 0.06) !important;
+}
+
+.faq-btn:hover {
+  color: #00c7fd !important;
+  background: rgba(0, 199, 253, 0.06) !important;
+}
+
+/* Bootstrap's default arrow — tint it */
+.faq-btn::after {
+  filter: brightness(0) invert(1);
+}
+
+.faq-btn:not(.collapsed)::after {
+  filter: invert(62%) sepia(77%) saturate(500%) hue-rotate(163deg) brightness(105%);
+}
+
+/* answer body */
+.faq-body {
+  background: transparent;
+  color: #b8ccd8;
+  font-size: 0.92rem;
+  line-height: 1.85;
+  padding: 6px 24px 22px;
+  border-top: 1px solid rgba(0, 199, 253, 0.1);
+}
+
+.faq-body strong {
+  color: #fff;
+}
+
+/* ================================================================
    SUBSCRIBE SECTION
    ================================================================ */
 .subscribe-section {
-  background: linear-gradient(160deg, #071428 0%, #0e1c35 100%);
+  background: #0e1c35;
 }
 
 .subscribe-section .section-title {
